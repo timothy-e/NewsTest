@@ -14,19 +14,22 @@ public class News extends AppCompatActivity {
 
     TextView output;
 
+    protected Document getHTML(){
+        try {
+            return Jsoup.connect("http://tdchristian.ca/news").get();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news);
         output = (TextView)findViewById(R.id.textView);
-
-        try {
-            Document doc = Jsoup.connect("http://tdchristian.ca/news").get();
-            Log.i("Debug", "Connected");
-            output.setText(doc.title());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Document doc = getHTML();
+        output.setText(doc.title());
 
 
     }
