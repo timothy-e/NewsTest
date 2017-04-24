@@ -22,7 +22,9 @@ public class News extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news);
+        Log.i(" *** DEBUG ***", "1");
         output = (TextView)findViewById(R.id.textView);
+        Log.i(" *** DEBUG ***", "2");
         try {
             doc = new retrieveHTML().execute().get();
         } catch (InterruptedException e) {
@@ -30,19 +32,25 @@ public class News extends AppCompatActivity {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
+        Log.i(" *** DEBUG ***", "3");
 
-        Elements allElements = doc.select("b");
-        int size = allElements.size();
-        /*for (Element i : allElements) {
-            output.setText(i + " " + i.text());
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            texts.concat("\n" + i.text());
-        }*/
-        output.setText(size);
+        String texts = "";
+        Elements titles = doc.select("title");
+        Log.i(" *** DEBUG ***", "title size = " + titles.size());
+        for (int i = 0; i < titles.size(); i++) {
+            Log.i(" *** DEBUG ***", "titles[i] = " + titles.get(i).toString());
+            texts += "\n" + titles.get(i).text().toString();
+            Log.i(" *** DEBUG ***", "texts = " + texts);
+        }
+        output.setText(texts);
+        texts = "";
+        Elements descs = doc.select("description");
+        Log.i(" *** DEBUG ***", "desc size = " + descs.size());
+        for (int i = 0; i < descs.size(); i++) {
+            Log.i(" *** DEBUG ***", "descs[i] = " + descs.get(i).toString());
+            texts += "\n" + descs.get(i).text().toString();
+            Log.i(" *** DEBUG ***", "descs = " + texts);
+        }
         //output.setText(doc.select("b").first().text());
         /*Element content = doc.getElementById("PAGES_CONTAINERinlineContent");
         Elements paragraphs = doc.getElementsByTag("h1");
@@ -51,9 +59,9 @@ public class News extends AppCompatActivity {
             texts.concat("\n" + i.text());
         }
         output.setText(texts);
-        if (texts.equals("")){
-            output.setText(doc.toString());
-        }*/
+        if (texts.equals("")){*/
+            //output.setText(doc.toString());
+        //}
 
 
     }
@@ -63,7 +71,7 @@ class retrieveHTML extends AsyncTask<Void, Void, Document> {
     @Override
     protected Document doInBackground(Void... Void){
         try {
-            return Jsoup.connect("http://splash.tdchristian.ca/classes/math/Hagen/C&V/").get();
+            return Jsoup.connect("http://tdnewstest.blogspot.com/feeds/posts/default?alt=rss").get();
             //return Jsoup.connect("http://tdchristian.ca/news").get();
         } catch (IOException e) {
             e.printStackTrace();
